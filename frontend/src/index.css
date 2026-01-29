@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
+/* M. Mohsin International Travel - Green & White Design System */
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 160 30% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 160 30% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 160 30% 10%;
+
+    /* Emerald Green Primary */
+    --primary: 158 64% 38%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Light Green Secondary */
+    --secondary: 158 30% 95%;
+    --secondary-foreground: 158 64% 28%;
+
+    --muted: 160 20% 96%;
+    --muted-foreground: 160 15% 45%;
+
+    /* Dark Green Accent */
+    --accent: 158 80% 28%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 160 20% 90%;
+    --input: 160 20% 90%;
+    --ring: 158 64% 38%;
+
+    --radius: 0.75rem;
+
+    /* Custom Travel Agency Colors */
+    --green: 158 64% 38%;
+    --green-light: 158 50% 55%;
+    --green-dark: 158 80% 22%;
+    --emerald: 160 70% 30%;
+    --teal: 168 60% 35%;
+
+    --sidebar-background: 158 80% 22%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 158 64% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 158 70% 30%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 158 50% 30%;
+    --sidebar-ring: 158 64% 38%;
+  }
+
+  .dark {
+    --background: 160 30% 6%;
+    --foreground: 0 0% 98%;
+
+    --card: 160 25% 10%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 160 25% 10%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 158 64% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 158 30% 15%;
+    --secondary-foreground: 158 50% 80%;
+
+    --muted: 160 25% 15%;
+    --muted-foreground: 160 15% 65%;
+
+    --accent: 158 70% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 160 25% 18%;
+    --input: 160 25% 18%;
+    --ring: 158 64% 45%;
+
+    --sidebar-background: 160 30% 6%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 158 64% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 158 40% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 160 25% 15%;
+    --sidebar-ring: 158 64% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .font-body {
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  .text-gradient-green {
+    @apply bg-gradient-to-r from-[hsl(var(--green-light))] via-[hsl(var(--green))] to-[hsl(var(--green-dark))] bg-clip-text text-transparent;
+  }
+
+  .bg-gradient-green {
+    @apply bg-gradient-to-br from-[hsl(var(--green))] via-[hsl(var(--emerald))] to-[hsl(var(--green-dark))];
+  }
+
+  .glass-effect {
+    @apply backdrop-blur-xl bg-background/80 border border-border/50;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  /* Infinite scroll animation for partners carousel */
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-scroll:hover {
+    animation-play-state: paused;
+  }
+}
