@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Pencil, Trash2, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { umrahPackagesApi } from "@/lib/api";
 
 const emptyPackage: Omit<UmrahPackage, "id"> = {
   name: "",
@@ -46,42 +47,82 @@ export default function AdminUmrahPackages() {
     setIsDialogOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const inclusions = inclusionsText.split("\n").filter(i => i.trim());
     
-    if (editingPackage) {
-      const updated = data.umrahPackages.map(p => 
-        p.id === editingPackage.id 
-          ? { ...formData, id: editingPackage.id, inclusions } 
-          : p
-      );
-      updateUmrahPackages(updated);
-      toast({ title: "Package Updated", description: "The package has been updated successfully." });
-    } else {
-      const newPackage: UmrahPackage = {
-        ...formData,
-        id: Date.now().toString(),
-        inclusions,
-      };
-      updateUmrahPackages([...data.umrahPackages, newPackage]);
-      toast({ title: "Package Added", description: "New package has been added successfully." });
+    try {
+      if (editingPackage) {
+        // Update existing package via API
+        const updated = await umrahPackagesApi.update(editingPackage.id, {
+          ...formData,
+          inclusions,
+        });
+        // Update local state with API response
+        const newPackages = data.umrahPackages.map(p => 
+          p.id === editingPackage.id ? updated : p
+        );
+        updateUmrahPackages(newPackages);
+        toast({ title: "Package Updated", description: "The package has been updated successfully." });
+      } else {
+        // Create new package via API
+        const created = await umrahPackagesApi.create({
+          ...formData,
+          inclusions,
+        });
+        // Add to local state with API response (which includes the ID from database)
+        updateUmrahPackages([...data.umrahPackages, created]);
+        toast({ title: "Package Added", description: "New package has been added successfully." });
+      }
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error("Error saving package:", error);
+      toast({ 
+        title: "Error", 
+        description: "Failed to save package. Please try again.",
+        variant: "destructive"
+      });
     }
-    setIsDialogOpen(false);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this package?")) {
-      updateUmrahPackages(data.umrahPackages.filter(p => p.id !== id));
-      toast({ title: "Package Deleted", description: "The package has been deleted." });
+      try {
+        await umrahPackagesApi.delete(id);
+        updateUmrahPackages(data.umrahPackages.filter(p => p.id !== id));
+        toast({ title: "Package Deleted", description: "The package has been deleted." });
+      } catch (error) {
+        console.error("Error deleting package:", error);
+        toast({ 
+          title: "Error", 
+          description: "Failed to delete package. Please try again.",
+          variant: "destructive"
+        });
+      }
     }
   };
 
-  const toggleFeatured = (id: string) => {
-    const updated = data.umrahPackages.map(p => 
-      p.id === id ? { ...p, featured: !p.featured } : p
-    );
-    updateUmrahPackages(updated);
+  const toggleFeatured = async (id: string) => {
+    try {
+      const pkg = data.umrahPackages.find(p => p.id === id);
+      if (!pkg) return;
+      
+      const updated = await umrahPackagesApi.update(id, { 
+        featured: !pkg.featured 
+      });
+      
+      const newPackages = data.umrahPackages.map(p => 
+        p.id === id ? updated : p
+      );
+      updateUmrahPackages(newPackages);
+    } catch (error) {
+      console.error("Error toggling featured:", error);
+      toast({ 
+        title: "Error", 
+        description: "Failed to update package. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
